@@ -1,11 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from tabulate import tabulate
-
-
-def f(x):
-    return 2 * np.sqrt(1 - x**2)
-
+from utils import f 
 
 def metodo_rectangulos(N):
     x = np.linspace(-1, 1, N + 1)
@@ -25,8 +21,8 @@ def metodo_punto_medio(N):
     midpoints = (x[:-1] + x[1:]) / 2
     return np.sum(f(midpoints) * dx)
 
-# --- Tablas ---
 
+#tablas
 def generar_tabla(valores_N):
     filas = []
     for N in valores_N:
@@ -62,8 +58,7 @@ print("=" * 90)
 print(tabulate(generar_tabla(range(1000, 10001, 1000)), headers=headers, floatfmt=".8f"))
 
 
-# --- Gráfica de convergencia ---
-
+#graficas
 N_vals = list(range(10, 5001, 10))
 
 r_vals  = [metodo_rectangulos(N)  for N in N_vals]
@@ -86,10 +81,8 @@ for ax, title, xlim in zip(axes,
     ax.set_title(title); ax.legend(); ax.grid(True, alpha=0.3)
 
 plt.tight_layout()
-plt.savefig("gráficas parte 3 convergencia.png", dpi=150)
+plt.savefig("graficas_parte3.png", dpi=150)
 plt.show()
-
-# --- Gráficas ---
 
 N_demo = 8
 x_demo = np.linspace(-1, 1, N_demo + 1)
