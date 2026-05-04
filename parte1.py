@@ -1,6 +1,10 @@
+import os
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
+
+IMAGES_DIR = "images"
+os.makedirs(IMAGES_DIR, exist_ok=True)
 
 def f(x):
     return 2 * np.sqrt(1 - x**2)
@@ -93,5 +97,5 @@ ax.legend()
 ax.grid(True, alpha=0.3)
 
 plt.tight_layout()
-plt.savefig("parte 1.png")
+plt.savefig(os.path.join(IMAGES_DIR, "parte 1.png"))
 plt.show()

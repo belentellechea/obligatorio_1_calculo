@@ -1,6 +1,10 @@
+import os
 import numpy as np
 import matplotlib.pyplot as plt
 from tabulate import tabulate
+
+IMAGES_DIR = "images"
+os.makedirs(IMAGES_DIR, exist_ok=True)
 
 def monte_carlo_pi(N, seed=None):
     rng = np.random.default_rng(seed)
@@ -72,7 +76,7 @@ ax.set_title("Error absoluto (escala log-log)")
 ax.legend(); ax.grid(True, alpha=0.3, which="both")
 
 plt.tight_layout()
-plt.savefig("gráficas parte 4 convergencia.png", dpi=150)
+plt.savefig(os.path.join(IMAGES_DIR, "gráficas parte 4 convergencia.png"), dpi=150)
 plt.show()
 
 
@@ -95,5 +99,5 @@ ax.legend(markerscale=5); ax.grid(True, alpha=0.3)
 ax.set_xlabel("x"); ax.set_ylabel("y")
 
 plt.tight_layout()
-plt.savefig("gráficas parte 4 visualizacion.png", dpi=150)
+plt.savefig(os.path.join(IMAGES_DIR, "gráficas parte 4 visualizacion.png"), dpi=150)
 plt.show()

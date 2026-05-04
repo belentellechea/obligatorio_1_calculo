@@ -1,7 +1,11 @@
+import os
 import numpy as np
 import matplotlib.pyplot as plt
 from tabulate import tabulate
 from utils import f 
+
+IMAGES_DIR = "images"
+os.makedirs(IMAGES_DIR, exist_ok=True)
 
 def particion_equiespaciada(N):
     x = np.linspace(-1, 1, N + 1)
@@ -83,7 +87,7 @@ for ax, title, xlim in zip(axes,
     ax.set_title(title); ax.legend(); ax.grid(True, alpha=0.3)
 
 plt.tight_layout()
-plt.savefig("graficas_parte3.png", dpi=150)
+plt.savefig(os.path.join(IMAGES_DIR, "graficas_parte3.png"), dpi=150)
 plt.show()
 
 N_demo = 8
@@ -131,5 +135,5 @@ for idx, (ax, titulo, color) in enumerate(zip(axes, titulos, colores)):
     ax.legend(["f(x)"])
 
 plt.tight_layout()
-plt.savefig("gráficas parte 3 ilustracion.png", dpi=150)
+plt.savefig(os.path.join(IMAGES_DIR, "gráficas parte 3 ilustracion.png"), dpi=150)
 plt.show()
