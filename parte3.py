@@ -48,19 +48,19 @@ headers = ["N",
             "Trapecio",    "Res. Trap.",
             "Pto. Medio",  "Res. P.M."]
 
-print("=" * 90)
+print("=" * 65)
 print("TABLA 1: N de 10 a 100 (paso 10)")
-print("=" * 90)
+print("=" * 65)
 print(tabulate(generar_tabla(range(10, 101, 10)), headers=headers, floatfmt=".8f"))
 
-print("\n" + "=" * 90)
+print("\n" + "=" * 65)
 print("TABLA 2: N de 100 a 1000 (paso 100)")
-print("=" * 90)
+print("=" * 65)
 print(tabulate(generar_tabla(range(100, 1001, 100)), headers=headers, floatfmt=".8f"))
 
-print("\n" + "=" * 90)
+print("\n" + "=" * 65)
 print("TABLA 3: N de 1000 a 10000 (paso 1000)")
-print("=" * 90)
+print("=" * 65)
 print(tabulate(generar_tabla(range(1000, 10001, 1000)), headers=headers, floatfmt=".8f"))
 
 

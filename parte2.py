@@ -1,14 +1,12 @@
 import os
 import numpy as np
 import matplotlib.pyplot as plt
-from tabulate import tabulate
 import pandas as pd
+from tabulate import tabulate
+from utils import f 
 
 IMAGES_DIR = "images"
 os.makedirs(IMAGES_DIR, exist_ok=True)
-
-def f(x):
-    return 2 * np.sqrt(1 - x**2)
 
 def suma_riemann(puntos):
     puntos = np.sort(puntos)
@@ -64,19 +62,15 @@ headers = ["N",
             "Aleatoria", "Residuo random",
             "Coseno", "Residuo coseno"]
 
-print("=" * 90)
 print("================ TABLA 1 =================")
-print("=" * 90)
 print(tabulate(crear_tabla(10, 100, 10), headers=headers, floatfmt=".8f"))
 
-print("\n" + "=" * 90)
+print("\n")
 print("================ TABLA 2 =================")
-print("=" * 90)
 print(tabulate(crear_tabla(100, 1000, 100), headers=headers, floatfmt=".8f"))
 
-print("\n" + "=" * 90)
+print("\n")
 print("================ TABLA 3 =================")
-print("=" * 90)
 print(tabulate(crear_tabla(1000, 10000, 1000), headers=headers, floatfmt=".8f"))
 
 # --- Gráfica de convergencia ---
@@ -119,7 +113,7 @@ def graficar_rectangulos(ax, particion_fn, N, titulo, color):
         x0, x1 = puntos[i], puntos[i+1]
         h = max(f(x0), f(x1))
         rect = plt.Rectangle((x0, 0), x1 - x0, h,
-                            alpha=0.3, color=color, edgecolor=color, linewidth=0.3)
+                            alpha=0.3, color=color, linewidth=0.3)
         ax.add_patch(rect)
 
     ax.set_title(titulo, fontsize=11)

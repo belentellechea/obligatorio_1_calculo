@@ -2,12 +2,10 @@ import os
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
+from utils import f
 
 IMAGES_DIR = "images"
 os.makedirs(IMAGES_DIR, exist_ok=True)
-
-def f(x):
-    return 2 * np.sqrt(1 - x**2)
 
 def suma_inferior(N):
     x = np.linspace(-1, 1, N + 1) # cantidad de subintervalos
