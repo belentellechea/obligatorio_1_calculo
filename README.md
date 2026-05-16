@@ -4,8 +4,6 @@
 - Belén Tellechea
 - Paulina Vidal
 
----
-
 # Estructura del proyecto
 
 ```bash
@@ -28,8 +26,6 @@
 | `parte4.py` | Implementación del método de Montecarlo |
 | `utils.py` | Funciones auxiliares reutilizadas en el proyecto |
 
----
-
 # Clonar el repositorio
 
 ```bash
@@ -41,8 +37,6 @@ Entrar al directorio:
 ```bash
 cd obligatorio_1_calculo
 ```
-
----
 
 # Instalación de dependencias
 
@@ -76,8 +70,6 @@ O instalar todas juntas:
 pip install numpy matplotlib pandas tabulate
 ```
 
----
-
 # Ejecución
 
 ## Parte 1 - Sumas inferiores y superiores
@@ -86,15 +78,11 @@ pip install numpy matplotlib pandas tabulate
 python parte1.py
 ```
 
----
-
 ## Parte 2 - Influencia de la partición
 
 ```bash
 python parte2.py
 ```
-
----
 
 ## Parte 3 - Comparación de métodos
 
@@ -102,15 +90,8 @@ python parte2.py
 python parte3.py
 ```
 
----
-
 ## Parte 4 - Integración Montecarlo
 
 ```bash
 python parte4.py
 ```
-
----
-
-
-
