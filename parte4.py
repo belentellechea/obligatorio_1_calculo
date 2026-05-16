@@ -42,9 +42,10 @@ N_vals = [int(n) for n in np.logspace(1, 5, 200)]
 
 estimaciones = [monte_carlo_pi(N) for N in N_vals]
 
-fig, ax = plt.subplots(figsize=(10, 5))
+fig, axes = plt.subplots(1, 2, figsize=(14, 5))
 fig.suptitle("Parte 4: Integración de Montecarlo")
 
+ax = axes[0]
 ax.semilogx(N_vals, estimaciones, color="darkorange", alpha=0.7, linewidth=1, label="Estimación Monte Carlo")
 ax.axhline(np.pi, color="green", linestyle="--", linewidth=2, label=f"π = {np.pi:.6f}")
 ax.fill_between(N_vals,
@@ -56,6 +57,15 @@ ax.set_ylabel("Estimación de π")
 ax.set_title("Convergencia (escala log)")
 ax.legend()
 ax.grid(True, alpha=0.3)
+
+ax = axes[1]
+errores = np.abs(np.array(estimaciones) - np.pi)
+ax.loglog(N_vals, errores, color="darkorange", alpha=0.7, linewidth=1, label="|error|")
+ax.loglog(N_vals, 1/np.sqrt(np.array(N_vals)), "g--", linewidth=2, label="O(1/√N) teórico")
+ax.set_xlabel("N (escala logarítmica)")
+ax.set_ylabel("|estimación - π|")
+ax.set_title("Error absoluto (escala log-log)")
+ax.legend(); ax.grid(True, alpha=0.3, which="both")
 
 # Guardar y mostrar
 

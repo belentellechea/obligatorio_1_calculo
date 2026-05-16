@@ -1,0 +1,342 @@
+\documentclass[a4paper,12pt]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{amsmath, amssymb}
+\usepackage{float}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{geometry}
+
+\geometry{margin=2.5cm}
+
+\begin{document}
+
+\begin{titlepage}
+    \centering
+    \vspace*{3cm}
+    
+    {\Huge Universidad Católica del Uruguay \par}
+    \vspace{1cm}
+    
+    {\Large Ingeniería en Informática / Cálculo Aplicado \par}
+    
+    \vspace{3cm}
+    
+    {\Huge \textbf{Proyecto 1} \par}
+    \vspace{0.5cm}
+    
+    {\LARGE Comparación de Métodos de Integración Numérica \par}
+    
+    \vfill
+    
+    {\Large Integrantes: \par}
+    \vspace{0.5cm}
+    
+    {\Large
+    Lucía Amor \par
+    Belén Tellechea \par
+    Paulina Vidal \par
+    }
+    
+    \vspace{2cm}
+    
+    {\Large Mayo 2026 \par}
+\end{titlepage}
+
+\tableofcontents
+\newpage
+
+% ==========================================================
+\section{Resumen}
+
+En el presente trabajo se analizaron distintos métodos de integración numérica aplicados a la función
+
+\[
+f(x) = \sqrt{1 - x^2}
+\]
+
+en el intervalo $[-1,1]$, cuya integral definida corresponde al valor de $\pi$.
+
+El objetivo principal consistió en estudiar la convergencia, precisión y estabilidad de diferentes técnicas de aproximación numérica, comparando métodos mediante funciones desarrolladas en lenguaje Python.
+
+En una primera etapa, se verificó experimentalmente que la función es integrable de Riemann a través del análisis de las sumas inferiores y superiores, observándose que ambas convergen al mismo valor conforme aumenta el número de particiones.
+
+Posteriormente, se estudió la influencia de distintos tipos de particiones (equiespaciadas, aleatorias y basadas en la distribución del coseno) sobre la precisión de las aproximaciones obtenidas.
+
+Además, se implementaron y compararon los métodos de rectángulos, trapecio y punto medio, evaluando el error asociado a cada uno. Los resultados mostraron que el método del punto medio presenta una convergencia más rápida y un error menor respecto a los otros métodos.
+
+Finalmente, se desarrolló una implementación del método de Montecarlo para estimar el valor de $\pi$ mediante muestreo aleatorio, donde se observa una convergencia estadística consistente con la Ley de los Grandes Números, a pesar de ser más lenta en comparación con los métodos deterministas tradicionales.
+
+Los resultados obtenidos permiten concluir que todos los métodos convergen al valor teórico de la integral, aunque con diferencias significativas en la precisión. Asimismo, se evidenció la utilidad del método de Montecarlo en problemas de alta complejidad donde los métodos clásicos presentan limitaciones.
+
+% ==========================================================
+\section{Introducción}
+
+La integración numérica constituye una herramienta fundamental dentro del análisis matemático. A través de distintos métodos de aproximación, es posible estimar áreas comprendidas entre una curva y el eje de las abscisas, para luego analizar el comportamiento de funciones.
+
+En este contexto, el presente trabajo estudia diferentes técnicas de integración numérica aplicadas a la función
+
+\[
+f(x) = \sqrt{1 - x^2}
+\]
+
+en el intervalo $[-1,1]$, cuya integral coincide con el valor teórico de $\pi$, utilizado como referencia para evaluar la precisión de las aproximaciones obtenidas y comparar los distintos factores que influyen en la exactitud de los métodos analizados.
+
+El desarrollo del trabajo se centra en el estudio de la convergencia de las sumas inferiores y superiores de Riemann, así como en la influencia de distintos tipos de particiones sobre la precisión de la aproximación. Además, se comparan métodos clásicos de integración, como el método de los rectángulos, el trapecio y el punto medio.
+
+Asimismo, se implementó el método de integración de Montecarlo como alternativa probabilística de aproximación, permitiendo contrastar enfoques deterministas y aleatorios.
+
+Para la realización de los experimentos se utilizó el lenguaje Python junto con bibliotecas especializadas como NumPy y Matplotlib, que facilitaron la automatización de cálculos, generación de tablas comparativas y la visualización gráfica de los resultados obtenidos.
+
+% ==========================================================
+\section{Marco Teórico}
+
+\subsection{Integral de Riemann}
+
+Según Wuolah (2024), la integral definida se utiliza para encontrar el área bajo una curva en un intervalo cerrado $[a,b]$ en el eje $x$. Esta se representa como:
+
+\[
+\int_a^b f(x)\,dx
+\]
+
+donde $a$ y $b$ son los límites de integración que definen el intervalo sobre el cual se está calculando el área, $f(x)$ es la función que se va a integrar y $dx$ indica que la integración se realiza respecto a la variable $x$.
+
+\subsection{Criterio de Integrabilidad de Darboux}
+
+Una función definida y acotada en un intervalo cerrado es integrable de Riemann si y sólo si sus sumas superiores e inferiores convergen al mismo número real (Spivak, 2008, cap.13).
+
+\subsection{Teorema de Darboux sobre la convergencia de sumas}
+
+De acuerdo con la teoría de integración, una función es integrable de Riemann si el límite de las sumas superiores e inferiores converge a un valor único cuando la norma de la partición tiende a cero (Spivak, 2008, cap.13).
+
+\subsection{Particiones}
+
+Dados dos números reales tales que $a < b$, recibe el nombre de partición $P$ del intervalo cerrado $[a,b]$ el conjunto:
+
+\[
+P = \{x_0, x_1, x_2, ..., x_n \mid a = x_0 < x_1 < x_2 < ... < x_n = b\}
+\]
+
+\subsection{Partición equiespaciada}
+
+Se llama partición equiespaciada de $[a,b]$ a un conjunto finito de puntos que incluye a los extremos $a$ y $b$ y cuya distancia entre puntos consecutivos es constante.
+
+\[
+\Delta x = \frac{b-a}{n}
+\]
+
+y
+
+\[
+x_i = a + i\Delta x
+\]
+
+% ==========================================================
+\section{Metodología}
+
+La metodología empleada combina el análisis matemático del problema con herramientas informáticas que permiten la experimentación numérica, la comparación de resultados y la visualización del comportamiento de los distintos métodos estudiados.
+
+En primer lugar, se partió de la función
+
+\[
+f(x)=\sqrt{1-x^2}
+\]
+
+definida en el intervalo $[-1,1]$, cuya integral representa el área de una semicircunferencia de radio 1 y coincide con el valor de $\pi$.
+
+A partir de esta base, se implementaron distintos métodos clásicos de integración numérica sobre particiones del intervalo estudiado, como sumas de rectángulos, regla del trapecio y método del punto medio.
+
+Asimismo, se estudió la influencia de diferentes tipos de partición sobre los resultados obtenidos, comparando particiones equiespaciadas, aleatorias y distribuciones no uniformes.
+
+Para asistir en los cálculos, generación de tablas comparativas y construcción de gráficos, se utilizó el lenguaje Python junto con bibliotecas especializadas como NumPy, Pandas y Matplotlib.
+
+% ==========================================================
+\section{Desarrollo}
+
+\subsection{Parte 1: Convergencia de sumas inferior y superior}
+
+En esta sección se verificó la integrabilidad de Riemann de la función en el intervalo $[-1,1]$ mediante el cálculo de sumas inferiores y superiores.
+
+El ancho de cada subintervalo se definió como:
+
+\[
+\Delta x = \frac{b-a}{N}
+\]
+
+La suma inferior se calculó mediante:
+
+\[
+L(f,P)=\sum m_i \Delta x
+\]
+
+mientras que la suma superior se obtuvo mediante:
+
+\[
+U(f,P)=\sum M_i \Delta x
+\]
+
+donde $m_i$ y $M_i$ representan respectivamente el mínimo y máximo de la función en cada subintervalo.
+
+\subsection{Parte 2: Influencia de la partición}
+
+Se analizaron tres tipos de particiones:
+
+\begin{itemize}
+    \item Partición equiespaciada
+    \item Partición aleatoria uniforme
+    \item Partición del coseno
+\end{itemize}
+
+La partición del coseno se definió como:
+
+\[
+x_i = \cos\left(\frac{i\pi}{N}\right)
+\]
+
+observándose una mayor densidad de puntos cerca de los extremos del intervalo.
+
+\subsection{Parte 3: Comparación de métodos}
+
+Se implementaron los métodos:
+
+\begin{itemize}
+    \item Método de rectángulos
+    \item Método del trapecio
+    \item Método del punto medio
+\end{itemize}
+
+El método de rectángulos se implementó mediante:
+
+\[
+\sum_{i=0}^{N-1} f(x_i)\Delta x
+\]
+
+El método del trapecio se definió como:
+
+\[
+\sum_{i=0}^{N-1} \frac{f(x_i)+f(x_{i+1})}{2}\Delta x
+\]
+
+Mientras que el método del punto medio utilizó:
+
+\[
+\sum_{i=0}^{N-1} f(m_i)\Delta x
+\]
+
+donde:
+
+\[
+m_i = \frac{x_i + x_{i+1}}{2}
+\]
+
+\subsection{Parte 4: Integración Montecarlo}
+
+En esta sección se implementó el método de Montecarlo para estimar el valor de $\pi$.
+
+Se generaron pares aleatorios $(x,y)$ dentro del cuadrado unitario:
+
+\[
+[0,1]\times[0,1]
+\]
+
+y se verificó la condición:
+
+\[
+x^2+y^2 \leq 1
+\]
+
+La proporción de puntos dentro del círculo permitió aproximar el valor:
+
+\[
+\pi \approx 4 \cdot \frac{\text{puntos dentro del círculo}}{\text{total de puntos}}
+\]
+
+% ==========================================================
+\section{Resultados}
+
+\subsection{Parte 1: Convergencia de sumas inferior y superior}
+
+Los resultados muestran que, a medida que aumenta el número de particiones, tanto la suma inferior como la superior convergen al valor teórico de $\pi$.
+
+\subsection{Parte 2: Influencia de la partición}
+
+Se observó que las tres particiones convergen al valor teórico de $\pi$, aunque la partición del coseno presentó un menor error respecto a las demás.
+
+\subsection{Parte 3: Comparación de métodos}
+
+Los resultados muestran que el método del punto medio presenta una convergencia más rápida y un error considerablemente menor respecto a los métodos de rectángulos y trapecio.
+
+\subsection{Parte 4: Integración Montecarlo}
+
+Los resultados obtenidos evidencian el comportamiento característico de un método estocástico. Si bien la convergencia es más lenta que en los métodos deterministas, el método converge estadísticamente hacia el valor de $\pi$.
+
+% ==========================================================
+\section{Discusión}
+
+Los resultados obtenidos permiten confirmar experimentalmente la integrabilidad de Riemann de la función analizada, dado que las sumas superiores e inferiores convergen al mismo valor cuando el número de particiones tiende a infinito.
+
+Además, se observó que la elección de la partición influye significativamente en la precisión de las aproximaciones. Particularmente, la partición del coseno resultó ser la más eficiente.
+
+En cuanto a los métodos numéricos estudiados, el método del punto medio fue el que presentó los errores más pequeños y una convergencia más rápida hacia el valor exacto de la integral.
+
+Por otro lado, el método de Montecarlo mostró una convergencia más lenta, aunque mantiene la ventaja de ser aplicable a problemas de alta dimensionalidad donde los métodos clásicos pierden eficiencia.
+
+% ==========================================================
+\section{Conclusiones}
+
+Los resultados obtenidos muestran que, para funciones integrables, tanto las sumas superiores como inferiores convergen al mismo valor teórico de la integral.
+
+Asimismo, el método del punto medio resultó ser el más preciso entre los métodos estudiados, debido a que representa de forma más adecuada el comportamiento local de la función en cada subintervalo.
+
+Finalmente, el método de Montecarlo demostró ser una herramienta útil para problemas complejos o multidimensionales, aunque presenta una convergencia más lenta en comparación con los métodos deterministas clásicos.
+
+% ==========================================================
+\section{Bibliografía}
+
+\begin{itemize}
+
+\item Amazon Web Services. (s.f.). \textit{¿En qué consiste la simulación de Monte Carlo?}
+
+\url{https://aws.amazon.com/es/what-is/monte-carlo-simulation/}
+
+\item Burden, R. L., \& Faires, J. D. (2011). \textit{Análisis numérico} (9.ª ed.). Cengage Learning.
+
+\item Chapra, S. C., \& Canale, R. P. (2015). \textit{Métodos numéricos para ingenieros} (7.ª ed.). McGraw-Hill Education.
+
+\item Stewart, J. (2012). \textit{Cálculo de una variable: Trascendentes tempranas}. Cengage Learning.
+
+\item Spivak, M. (2008). \textit{Calculus} (4th ed.).
+
+\item Bedia, J. (s.f.). \textit{Integral definida. Integral de Riemann}. Universidad de Cantabria.
+
+\url{https://ocw.unican.es/pluginfile.php/1897/course/section/1562/int.pdf}
+
+\item Maza, S. (s.f.). \textit{Cálculo Integral en una y varias variables}. 
+
+\url{https://suportdocent.udl.cat/cursos/102101/menu/index.htm}
+
+\item Wuolah (2024). \textit{Integral definida: concepto, propiedades y cálculo}.
+
+\url{https://wuolah.com/blog/integral-definida/}
+
+\end{itemize}
+
+% ==========================================================
+\section{Anexo}
+
+\begin{itemize}
+
+\item Repositorio GitHub con el código desarrollado:
+
+\url{https://github.com/belentellechea/obligatorio_1_calculo.git}
+
+\item Código desarrollado.
+
+\item Tablas y figuras generadas durante los experimentos.
+
+\end{itemize}
+
+\end{document}
