@@ -86,5 +86,5 @@ for ax, N in zip(axes, N_values):
     ax.set_ylabel("y")
 
 plt.tight_layout()
-plt.savefig(f"{IMAGES_DIR}/gráficas parte 4 visualizacion.png", dpi=150)
+plt.savefig(f"{IMAGES_DIR}/gráficas parte 4 visualización.png", dpi=150)
 plt.show()
