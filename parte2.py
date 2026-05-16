@@ -1,29 +1,18 @@
-import os
 import numpy as np
 import matplotlib.pyplot as plt
-import pandas as pd
-from tabulate import tabulate
-from utils import f 
+from utils import (
+    IMAGES_DIR,
+    crear_dataframe,
+    crear_directorio_imagenes,
+    imprimir_tabla,
+    f,
+    particion_aleatoria,
+    particion_coseno,
+    particion_equiespaciada,
+    suma_riemann
+)
 
-IMAGES_DIR = "images"
-os.makedirs(IMAGES_DIR, exist_ok=True)
-
-def suma_riemann(puntos):
-    puntos = np.sort(puntos)
-    dx = np.diff(puntos)
-    maxs = np.maximum(f(puntos[:-1]), f(puntos[1:]))
-    return np.sum(maxs * dx)
-
-def particion_equiespaciada(N):
-    return np.linspace(-1, 1, N + 1)
-
-def particion_aleatoria(N):
-    puntos = np.random.uniform(-1, 1, N - 1)
-    return np.sort(np.concatenate(([-1.0], puntos, [1.0])))
-
-def particion_coseno(N):
-    i = np.arange(N + 1)
-    return np.sort(np.cos(i * np.pi / N))
+crear_directorio_imagenes()
 
 # --- Tablas ---
 
@@ -48,30 +37,21 @@ def crear_tabla(inicio, fin, paso):
             co, err_co
         ])
 
-    tabla = pd.DataFrame(datos, columns=[
+    return crear_dataframe(datos, [
         "N",
-        "Equiespaciada", "Residuo Eq",
+        "Equiespaciada", "Residuo Eq.",
         "Aleatoria", "Residuo Aleatorio",
         "Cosenoidal", "Residuo Coseno"
     ])
 
-    return tabla
-
 headers = ["N",
-            "Equiespaciada.", "Residuo eq.",
-            "Aleatoria", "Residuo random",
-            "Coseno", "Residuo coseno"]
+            "Equiespaciada.", "Residuo Eq.",
+            "Aleatoria", "Residuo Aleatorio",
+            "Coseno", "Residuo Coseno"]
 
-print("================ TABLA 1 =================")
-print(tabulate(crear_tabla(10, 100, 10), headers=headers, floatfmt=".8f"))
-
-print("\n")
-print("================ TABLA 2 =================")
-print(tabulate(crear_tabla(100, 1000, 100), headers=headers, floatfmt=".8f"))
-
-print("\n")
-print("================ TABLA 3 =================")
-print(tabulate(crear_tabla(1000, 10000, 1000), headers=headers, floatfmt=".8f"))
+imprimir_tabla(crear_tabla(10, 100, 10), headers, "1: N de 10 a 100 (paso 10)")
+imprimir_tabla(crear_tabla(100, 1000, 100), headers, "2: N de 100 a 1000 (paso 100)")
+imprimir_tabla(crear_tabla(1000, 10000, 1000), headers, "3: N de 1000 a 10000 (paso 1000)")
 
 # --- Gráfica de convergencia ---
 
@@ -79,29 +59,30 @@ N_vals = list(range(10, 5001, 20))
 np.random.seed(42)
 
 eq_vals   = [suma_riemann(particion_equiespaciada(N)) for N in N_vals]
-cos_vals  = [suma_riemann(particion_coseno(N))        for N in N_vals]
+cos_vals  = [suma_riemann(particion_coseno(N)) for N in N_vals]
 rand_vals = [np.mean([suma_riemann(particion_aleatoria(N)) for _ in range(5)]) for N in N_vals]
 
 fig, axes = plt.subplots(1, 2, figsize=(15, 5))
-fig.suptitle("Parte 2")
+fig.suptitle("Parte 2: Influencia de la partición")
 
-for ax, title, xlim in zip(axes,
-                            ["N: 10 → 5000", "Zoom"],
-                            [(10, 5000), (100, 1000)]):
+for ax, title, xlim in zip(axes, ["Gráfico — N: 10 - 5000", "Gráfico con zoom — N: 100 - 1000"], [(10, 5000), (100, 1000)]):
     mask = (np.array(N_vals) >= xlim[0]) & (np.array(N_vals) <= xlim[1])
     Ns = np.array(N_vals)[mask]
     ax.plot(Ns, np.array(eq_vals)[mask], label="Equiespaciada", color="steelblue")
     ax.plot(Ns, np.array(rand_vals)[mask], label="Aleatoria", color="orange")
     ax.plot(Ns, np.array(cos_vals)[mask], label="Coseno", color="purple")
-    ax.axhline(np.pi, color="green", linestyle="--", linewidth=1.5, label="π teórico")
-    ax.set_xlabel("N"); ax.set_ylabel("Aproximación de π")
-    ax.set_title(title); ax.legend(); ax.grid(True, alpha=0.3)
+    ax.axhline(np.pi, color="forestgreen", linestyle="--", linewidth=1.5, label="π teórico")
+    ax.set_xlabel("N")
+    ax.set_ylabel("Aproximación de π")
+    ax.set_title(title)
+    ax.legend()
+    ax.grid(True, alpha=0.3)
 
 plt.tight_layout()
-plt.savefig(os.path.join(IMAGES_DIR, "gráficas parte 2 convergencia.png"), dpi=150)
+plt.savefig(f"{IMAGES_DIR}/gráficas parte 2 convergencia.png", dpi=150)
 plt.show()
 
-# --- Gráfica de rectángulos para N=100 ---
+# --- Gráfica de rectángulos para N = 100 ---
 
 def graficar_rectangulos(ax, particion_fn, N, titulo, color):
     puntos = np.sort(particion_fn(N))
@@ -117,18 +98,22 @@ def graficar_rectangulos(ax, particion_fn, N, titulo, color):
         ax.add_patch(rect)
 
     ax.set_title(titulo, fontsize=11)
-    ax.set_xlabel("x"); ax.set_ylabel("f(x)")
-    ax.set_xlim(-1.05, 1.05); ax.set_ylim(-0.1, 2.3)
+    ax.set_xlabel("x")
+    ax.set_ylabel("f(x)")
+    ax.set_xlim(-1.05, 1.05)
+    ax.set_ylim(-0.1, 2.3)
     ax.grid(True, alpha=0.3)
 
 fig, axes = plt.subplots(1, 3, figsize=(16, 5))
-fig.suptitle("Parte 2 - Rectángulos de aproximación (N = 100)")
+fig.suptitle("Parte 2: Rectángulos para N = 100")
 
 np.random.seed(0)
 graficar_rectangulos(axes[0], particion_equiespaciada, 100, "Partición equiespaciada", "steelblue")
-graficar_rectangulos(axes[1], particion_aleatoria,     100, "Partición aleatoria",     "orange")
-graficar_rectangulos(axes[2], particion_coseno,        100, "Partición coseno",        "purple")
+graficar_rectangulos(axes[1], particion_aleatoria, 100, "Partición aleatoria", "orange")
+graficar_rectangulos(axes[2], particion_coseno, 100, "Partición coseno", "purple")
+
+# Guardar y mostrar
 
 plt.tight_layout()
-plt.savefig(os.path.join(IMAGES_DIR, "gráficas parte 2.png"), dpi=150)
+plt.savefig(f"{IMAGES_DIR}/gráficas parte 2 rectángulos.png", dpi=150)
 plt.show()
