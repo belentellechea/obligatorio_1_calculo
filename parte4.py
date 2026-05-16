@@ -66,22 +66,24 @@ plt.show()
 # --- Visualización clásica del método ---
 
 rng = np.random.default_rng(7)
-N_vis = 5000
-x = rng.uniform(0, 1, N_vis)
-y = rng.uniform(0, 1, N_vis)
-dentro = (x**2 + y**2) <= 1
+N_values = [2000, 10000]
 
-fig, ax = plt.subplots(figsize=(6, 6))
-ax.scatter(x[ dentro], y[ dentro], s=1, color="steelblue", alpha=0.5, label="Dentro")
-ax.scatter(x[~dentro], y[~dentro], s=1, color="tomato",    alpha=0.5, label="Fuera")
-theta = np.linspace(0, np.pi/2, 300)
-ax.plot(np.cos(theta), np.sin(theta), "k-", linewidth=2)
-ax.set_aspect("equal")
-ax.set_title(f"Monte Carlo: (N={N_vis}): π ≈ {4*np.sum(dentro)/N_vis:.5f}", fontsize=13)
-ax.legend()
-ax.grid(True, alpha=0.3)
-ax.set_xlabel("x")
-ax.set_ylabel("y")
+fig, axes = plt.subplots(1, 2, figsize=(15, 6))
+for ax, N in zip(axes, N_values):
+    x = rng.uniform(0, 1, N)
+    y = rng.uniform(0, 1, N)
+    dentro = (x**2 + y**2) <= 1
+
+    ax.scatter(x[dentro], y[dentro], s=1, color="steelblue", alpha=0.5, label="Dentro")
+    ax.scatter(x[~dentro], y[~dentro], s=1, color="tomato", alpha=0.5, label="Fuera")
+    theta = np.linspace(0, np.pi/2, 300)
+    ax.plot(np.cos(theta), np.sin(theta), "k-", linewidth=2)
+    ax.set_aspect("equal")
+    ax.set_title(f"Visualización de Montecarlo para N = {N} π ≈ {4*np.sum(dentro)/N:.5f}")
+    ax.legend()
+    ax.grid(True, alpha=0.3)
+    ax.set_xlabel("x")
+    ax.set_ylabel("y")
 
 plt.tight_layout()
 plt.savefig(f"{IMAGES_DIR}/gráficas parte 4 visualizacion.png", dpi=150)
